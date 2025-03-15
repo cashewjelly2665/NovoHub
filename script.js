@@ -9,7 +9,7 @@ function showSignUp() {
 }
 
 function signUp() {
-    const username = document.getElementById('signup-username').value;
+    const username = document.getElementById('signup-username').value.trim();
     const password = document.getElementById('signup-password').value;
 
     if (username && password) {
@@ -23,7 +23,7 @@ function signUp() {
 }
 
 function login() {
-    const username = document.getElementById('login-username').value;
+    const username = document.getElementById('login-username').value.trim();
     const password = document.getElementById('login-password').value;
 
     const storedUsername = localStorage.getItem('username');
@@ -31,6 +31,7 @@ function login() {
 
     if (username === storedUsername && password === storedPassword) {
         localStorage.setItem('loggedIn', 'true');
+        localStorage.setItem('currentUser', username);
         displayChat(username);
     } else {
         alert('Invalid username or password.');
@@ -46,8 +47,7 @@ function displayChat(username) {
 
 function logOut() {
     localStorage.removeItem('loggedIn');
-    localStorage.removeItem('username');
-    localStorage.removeItem('password');
+    localStorage.removeItem('currentUser');
     document.getElementById('chat-container').style.display = 'none';
     showLogin();
 }
@@ -55,7 +55,7 @@ function logOut() {
 function sendMessage() {
     const input = document.getElementById("message-input");
     const chatBox = document.getElementById("chat-box");
-    const username = localStorage.getItem('username');
+    const username = localStorage.getItem('currentUser');
 
     if (!username) {
         alert("You must be logged in to send messages.");
@@ -90,7 +90,7 @@ function checkEnter(event) {
 }
 
 window.onload = () => {
-    const username = localStorage.getItem('username');
+    const username = localStorage.getItem('currentUser');
     if (localStorage.getItem('loggedIn') === 'true' && username) {
         displayChat(username);
     } else {
