@@ -70,11 +70,19 @@ function sendMessage() {
             timestamp: Date.now()
         };
 
-        let messages = JSON.parse(localStorage.getItem('messages')) || [];
-        messages.push(messageData);
-        localStorage.setItem('messages', JSON.stringify(messages));
+        fetch('/send-message', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(messageData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            loadMessages();
+        })
+        .catch(error => console.error('Error sending message:', error));
 
-        loadMessages();
         input.value = "";
     }
 }
@@ -104,13 +112,14 @@ function loadMessages() {
     const chatBox = document.getElementById("chat-box");
     chatBox.innerHTML = "";
 
-    let messages = JSON.parse(localStorage.getItem('messages')) || [];
-    const oneHourAgo = Date.now() - 3600000;
-
-    messages = messages.filter(msg => msg.timestamp > oneHourAgo);
-    
-    messages.forEach(addMessageToChat);
-    localStorage.setItem('messages', JSON.stringify(messages));
+    fetch('/get-messages')
+        .then(response => response.json())
+        .then(data => {
+            const oneHourAgo = Date.now() - 3600000;
+            const filteredMessages = data.filter(msg => msg.timestamp > oneHourAgo);
+            filteredMessages.forEach(addMessageToChat);
+        })
+        .catch(error => console.error('Error loading messages:', error));
 }
 
 function checkEnter(event) {
@@ -124,7 +133,6 @@ function checkChatReset() {
     const now = Date.now();
     
     if (!lastReset || now - lastReset > 3600000) {
-        localStorage.removeItem('messages');
         localStorage.setItem('lastChatReset', now);
     }
 }
