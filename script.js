@@ -1,54 +1,51 @@
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxiS0qE5MXlCuCLXKDDjAsVXiCBtzSIx6q5orG420mog7HFkAA6nCd1fW9uK59d3GOCqQ/exec";
 
-function sendMessage() {
-    const input = document.getElementById("message-input");
-    const username = localStorage.getItem('currentUser');
+function signUp() {
+    const username = document.getElementById('signup-username').value.trim();
+    const password = document.getElementById('signup-password').value;
 
-    if (!username) {
-        alert("You must be logged in to send messages.");
+    if (!username || !password) {
+        alert("Please fill out both fields.");
         return;
     }
 
-    if (input.value.trim() !== "") {
-        const messageData = {
-            username: username,
-            message: input.value,
-            timestamp: Date.now()
-        };
-
-        fetch(SCRIPT_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: "sendMessage", data: messageData })
-        })
-        .then(response => response.json())
-        .then(() => {
-            loadMessages();
-        })
-        .catch(error => console.error('Error sending message:', error));
-
-        input.value = "";
-    }
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: "signUp", username, password })
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        if (data.success) {
+            showLogin();
+        }
+    })
+    .catch(error => console.error('Error:', error));
 }
 
-function loadMessages() {
-    fetch(SCRIPT_URL + "?action=getMessages")
-        .then(response => response.json())
-        .then(data => {
-            const chatBox = document.getElementById("chat-box");
-            chatBox.innerHTML = "";
-            const oneHourAgo = Date.now() - 3600000;
-            const filteredMessages = data.filter(msg => msg.timestamp > oneHourAgo);
-            filteredMessages.forEach(addMessageToChat);
-        })
-        .catch(error => console.error('Error loading messages:', error));
-}
+function login() {
+    const username = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value;
 
-setInterval(loadMessages, 2000);
-
-window.onload = () => {
-    const username = localStorage.getItem('currentUser');
-    if (localStorage.getItem('loggedIn') === 'true' && username) {
-        loadMessages();
+    if (!username || !password) {
+        alert("Please fill out both fields.");
+        return;
     }
-};
+
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: "login", username, password })
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        if (data.success) {
+            localStorage.setItem('loggedIn', 'true');
+            localStorage.setItem('currentUser', username);
+            displayChat(username);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
