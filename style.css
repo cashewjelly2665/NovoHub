@@ -76,3 +76,23 @@ header {
 .chat-input button:hover {
     background: #b58fb5;
 }
+
+.message-container {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.message-container .username {
+    font-weight: bold;
+    color: #000080;
+    margin-right: 10px;
+}
+
+.message-container .message {
+    background-color: #C8A2C8;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 10px;
+    max-width: 70%;
+    word-wrap: break-word;
+}
