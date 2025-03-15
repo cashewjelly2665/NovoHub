@@ -32,6 +32,7 @@ function login() {
     if (username === storedUsername && password === storedPassword) {
         localStorage.setItem('loggedIn', 'true');
         localStorage.setItem('currentUser', username);
+        checkChatReset();
         displayChat(username);
     } else {
         alert('Invalid username or password.');
@@ -43,6 +44,7 @@ function displayChat(username) {
     document.getElementById('signup-form').style.display = 'none';
     document.getElementById('chat-container').style.display = 'block';
     document.getElementById('username-display').textContent = `Logged in as: ${username}`;
+    loadMessages();
 }
 
 function logOut() {
@@ -63,24 +65,53 @@ function sendMessage() {
     }
 
     if (input.value.trim() !== "") {
-        const messageContainer = document.createElement("div");
-        messageContainer.classList.add("message-container");
+        const messageData = {
+            username: username,
+            message: input.value,
+            timestamp: Date.now()
+        };
 
-        const userNameElement = document.createElement("span");
-        userNameElement.classList.add("username");
-        userNameElement.textContent = username + ": ";
+        let messages = JSON.parse(localStorage.getItem('messages')) || [];
+        messages.push(messageData);
+        localStorage.setItem('messages', JSON.stringify(messages));
 
-        const messageElement = document.createElement("span");
-        messageElement.classList.add("message");
-        messageElement.textContent = input.value;
-
-        messageContainer.appendChild(userNameElement);
-        messageContainer.appendChild(messageElement);
-        chatBox.appendChild(messageContainer);
+        addMessageToChat(messageData);
         
         chatBox.scrollTop = chatBox.scrollHeight;
         input.value = "";
     }
+}
+
+function addMessageToChat(messageData) {
+    const chatBox = document.getElementById("chat-box");
+
+    const messageContainer = document.createElement("div");
+    messageContainer.classList.add("message-container");
+
+    const userNameElement = document.createElement("span");
+    userNameElement.classList.add("username");
+    userNameElement.textContent = messageData.username + ": ";
+
+    const messageElement = document.createElement("span");
+    messageElement.classList.add("message");
+    messageElement.textContent = messageData.message;
+
+    messageContainer.appendChild(userNameElement);
+    messageContainer.appendChild(messageElement);
+    chatBox.appendChild(messageContainer);
+}
+
+function loadMessages() {
+    const chatBox = document.getElementById("chat-box");
+    chatBox.innerHTML = "";
+
+    let messages = JSON.parse(localStorage.getItem('messages')) || [];
+    const oneHourAgo = Date.now() - 3600000;
+    
+    messages = messages.filter(msg => msg.timestamp > oneHourAgo);
+    
+    messages.forEach(addMessageToChat);
+    localStorage.setItem('messages', JSON.stringify(messages));
 }
 
 function checkEnter(event) {
@@ -102,6 +133,7 @@ function checkChatReset() {
 window.onload = () => {
     const username = localStorage.getItem('currentUser');
     if (localStorage.getItem('loggedIn') === 'true' && username) {
+        checkChatReset();
         displayChat(username);
     } else {
         showLogin();
