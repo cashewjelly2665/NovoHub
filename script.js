@@ -89,6 +89,16 @@ function checkEnter(event) {
     }
 }
 
+function checkChatReset() {
+    const lastReset = localStorage.getItem('lastChatReset');
+    const now = Date.now();
+    
+    if (!lastReset || now - lastReset > 3600000) {
+        localStorage.removeItem('messages');
+        localStorage.setItem('lastChatReset', now);
+    }
+}
+
 window.onload = () => {
     const username = localStorage.getItem('currentUser');
     if (localStorage.getItem('loggedIn') === 'true' && username) {
