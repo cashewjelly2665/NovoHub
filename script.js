@@ -16,7 +16,7 @@ function signUp() {
         localStorage.setItem('username', username);
         localStorage.setItem('password', password);
         alert('Account created successfully! Please log in.');
-        showLogin();
+        showLogin(); 
     } else {
         alert('Please fill out both fields.');
     }
@@ -30,7 +30,7 @@ function login() {
     const storedPassword = localStorage.getItem('password');
 
     if (username === storedUsername && password === storedPassword) {
-        localStorage.setItem('loggedIn', true);
+        localStorage.setItem('loggedIn', 'true');
         displayChat(username);
     } else {
         alert('Invalid username or password.');
@@ -41,7 +41,7 @@ function displayChat(username) {
     document.getElementById('login-form').style.display = 'none';
     document.getElementById('signup-form').style.display = 'none';
     document.getElementById('chat-container').style.display = 'block';
-    document.getElementById('username-display').textContent = `Username: ${username}`;
+    document.getElementById('username-display').textContent = `Logged in as: ${username}`;
 }
 
 function logOut() {
@@ -55,16 +55,29 @@ function logOut() {
 function sendMessage() {
     const input = document.getElementById("message-input");
     const chatBox = document.getElementById("chat-box");
+    const username = localStorage.getItem('username');
+
+    if (!username) {
+        alert("You must be logged in to send messages.");
+        return;
+    }
 
     if (input.value.trim() !== "") {
-        const message = document.createElement("div");
-        message.textContent = input.value;
-        message.style.padding = "5px";
-        message.style.margin = "5px 0";
-        message.style.borderRadius = "5px";
-        message.style.background = "#C8A2C8";
-        message.style.color = "white";
-        chatBox.appendChild(message);
+        const messageContainer = document.createElement("div");
+        messageContainer.classList.add("message-container");
+
+        const userNameElement = document.createElement("span");
+        userNameElement.classList.add("username");
+        userNameElement.textContent = username + ": ";
+
+        const messageElement = document.createElement("span");
+        messageElement.classList.add("message");
+        messageElement.textContent = input.value;
+
+        messageContainer.appendChild(userNameElement);
+        messageContainer.appendChild(messageElement);
+        chatBox.appendChild(messageContainer);
+        
         chatBox.scrollTop = chatBox.scrollHeight;
         input.value = "";
     }
@@ -77,8 +90,8 @@ function checkEnter(event) {
 }
 
 window.onload = () => {
-    if (localStorage.getItem('loggedIn') === 'true') {
-        const username = localStorage.getItem('username');
+    const username = localStorage.getItem('username');
+    if (localStorage.getItem('loggedIn') === 'true' && username) {
         displayChat(username);
     } else {
         showLogin();
