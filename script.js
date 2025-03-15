@@ -56,7 +56,6 @@ function logOut() {
 
 function sendMessage() {
     const input = document.getElementById("message-input");
-    const chatBox = document.getElementById("chat-box");
     const username = localStorage.getItem('currentUser');
 
     if (!username) {
@@ -75,9 +74,7 @@ function sendMessage() {
         messages.push(messageData);
         localStorage.setItem('messages', JSON.stringify(messages));
 
-        addMessageToChat(messageData);
-        
-        chatBox.scrollTop = chatBox.scrollHeight;
+        loadMessages();
         input.value = "";
     }
 }
@@ -99,6 +96,8 @@ function addMessageToChat(messageData) {
     messageContainer.appendChild(userNameElement);
     messageContainer.appendChild(messageElement);
     chatBox.appendChild(messageContainer);
+
+    chatBox.scrollTop = chatBox.scrollHeight;
 }
 
 function loadMessages() {
@@ -107,7 +106,7 @@ function loadMessages() {
 
     let messages = JSON.parse(localStorage.getItem('messages')) || [];
     const oneHourAgo = Date.now() - 3600000;
-    
+
     messages = messages.filter(msg => msg.timestamp > oneHourAgo);
     
     messages.forEach(addMessageToChat);
@@ -129,6 +128,8 @@ function checkChatReset() {
         localStorage.setItem('lastChatReset', now);
     }
 }
+
+setInterval(loadMessages, 2000);
 
 window.onload = () => {
     const username = localStorage.getItem('currentUser');
