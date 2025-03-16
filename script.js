@@ -1,6 +1,6 @@
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxiS0qE5MXlCuCLXKDDjAsVXiCBtzSIx6q5orG420mog7HFkAA6nCd1fW9uK59d3GOCqQ/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbymVmMPr576EbNDosLvE25uY9FKjHBDXbT-Pu-wFaPIYEZN0UofQCS_dTiW11TxFq3UFA/exec";
 
-function signUp() {
+async function signUp() {
     const username = document.getElementById('signup-username').value.trim();
     const password = document.getElementById('signup-password').value;
 
@@ -9,31 +9,26 @@ function signUp() {
         return;
     }
 
-    fetch(SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: "signUp", username, password }),
-        mode: 'cors'
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
+    try {
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: "signUp", username, password }),
+            mode: 'cors'
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+        const data = await response.json();
         alert(data.message);
-        if (data.success) {
-            showLogin();
-        }
-    })
-    .catch(error => {
+        if (data.success) showLogin();
+    } catch (error) {
         console.error('Fetch Error:', error);
-        alert("There was a problem with the signup request. Check console for details.");
-    });
+        alert("Signup request failed. Check console.");
+    }
 }
 
-function login() {
+async function login() {
     const username = document.getElementById('login-username').value.trim();
     const password = document.getElementById('login-password').value;
 
@@ -42,28 +37,25 @@ function login() {
         return;
     }
 
-    fetch(SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: "login", username, password }),
-        mode: 'cors'
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
+    try {
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: "login", username, password }),
+            mode: 'cors'
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+        const data = await response.json();
         alert(data.message);
         if (data.success) {
             localStorage.setItem('loggedIn', 'true');
             localStorage.setItem('currentUser', username);
             displayChat(username);
         }
-    })
-    .catch(error => {
+    } catch (error) {
         console.error('Fetch Error:', error);
-        alert("There was a problem with the login request. Check console for details.");
-    });
+        alert("Login request failed. Check console.");
+    }
 }
