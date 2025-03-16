@@ -23,7 +23,7 @@ async function signUp() {
         alert(data.message);
         if (data.success) showLogin();
     } catch (error) {
-        console.error('Fetch Error:', error);
+        console.error('Signup Fetch Error:', error);
         alert("Signup request failed. Check console.");
     }
 }
@@ -55,7 +55,7 @@ async function login() {
             displayChat(username);
         }
     } catch (error) {
-        console.error('Fetch Error:', error);
+        console.error('Login Fetch Error:', error);
         alert("Login request failed. Check console.");
     }
 }
