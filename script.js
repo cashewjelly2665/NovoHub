@@ -12,16 +12,25 @@ function signUp() {
     fetch(SCRIPT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: "signUp", username, password })
+        body: JSON.stringify({ action: "signUp", username, password }),
+        mode: 'cors'
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         alert(data.message);
         if (data.success) {
             showLogin();
         }
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+        console.error('Fetch Error:', error);
+        alert("There was a problem with the signup request. Check console for details.");
+    });
 }
 
 function login() {
@@ -36,9 +45,15 @@ function login() {
     fetch(SCRIPT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: "login", username, password })
+        body: JSON.stringify({ action: "login", username, password }),
+        mode: 'cors'
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         alert(data.message);
         if (data.success) {
@@ -47,5 +62,8 @@ function login() {
             displayChat(username);
         }
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+        console.error('Fetch Error:', error);
+        alert("There was a problem with the login request. Check console for details.");
+    });
 }
