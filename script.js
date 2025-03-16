@@ -13,7 +13,8 @@ async function signUp() {
         const response = await fetch(SCRIPT_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: "signUp", username, password })
+            body: JSON.stringify({ action: "signUp", username, password }),
+            mode: 'no-cors'
         });
 
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
@@ -40,7 +41,8 @@ async function login() {
         const response = await fetch(SCRIPT_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: "login", username, password })
+            body: JSON.stringify({ action: "login", username, password }),
+            mode: 'no-cors'
         });
 
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
