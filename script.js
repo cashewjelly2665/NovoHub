@@ -14,7 +14,7 @@ async function signUp() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ action: "signUp", username, password }),
-            mode: 'cors'
+            mode: 'no-cors'
         });
 
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
@@ -42,7 +42,7 @@ async function login() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ action: "login", username, password }),
-            mode: 'cors'
+            mode: 'no-cors'
         });
 
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
