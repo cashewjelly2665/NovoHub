@@ -1,4 +1,4 @@
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzdkEQkvqiioCTGp3GYKal9iUiyL13BCtXO-z1iQtZ3tQSgqKeay6Rhs6Bl4WyN8Y4GiA/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-M2uuAqHKUaui0Kguf-q91e2nMbqsK6vN6IG8S30htPWVeAWrEQbkg6jA6jinrh2jdw/exec";
 
 async function signUp() {
     const username = document.getElementById('signup-username').value.trim();
